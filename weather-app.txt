@@ -1,0 +1,198 @@
+** start of index.html **
+
+<!-- file: index.html -->
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Weather App</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+
+  <body>
+    <div id="weather-container">
+      <img id="weather-icon">
+      <p id="main-temperature"></p>
+      <p id="feels-like"></p>
+      <p id="humidity"></p>
+      <p id="wind"></p>
+      <p id="wind-gust"></p>
+      <p id="weather-main"></p>
+      <p id="location"></p>
+    </div>
+    <div id ="options-container">
+      <select id="cities" name="cities">
+        <option value=""></option>
+        <option value="new york">New York</option>
+        <option value="los angeles">Los Angeles</option>
+        <option value="chicago">Chicago</option>
+        <option value="paris">Paris</option>
+        <option value="tokyo">Tokyo</option>
+        <option value="london">London</option>
+      </select>
+      <button type="button" id="get-weather-btn">Get Weather!</button>
+    </div>
+    <script src="script.js"></script>
+  </body>
+</html>
+
+** end of index.html **
+
+** start of styles.css **
+
+/* file: styles.css */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: Verdana, Geneva, sans-serif;
+}
+
+body {
+  background: linear-gradient(to bottom right, #c0f0f0, #e0ffff);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 100vh;
+  padding: 2vh 0;
+}
+
+/* Weather container */
+#weather-container {
+  width: 90vw;
+  max-width: 600px;
+  background-color: white;
+  border: 3px solid #00aaaa;
+  border-radius: 20px;
+  padding: 2rem;
+  margin-bottom: 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+}
+
+#weather-container img {
+  width: 100px;
+  height: 100px;
+}
+
+/* Weather text elements */
+#weather-container p {
+  font-size: 1.2rem;
+  color: #333;
+  text-align: center;
+  margin: 0.2rem 0;
+}
+
+/* Options container */
+#options-container {
+  width: 90vw;
+  max-width: 600px;
+  background-color: white;
+  border: 3px solid #00aaaa;
+  border-radius: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem 1rem;
+  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* City select dropdown */
+#cities {
+  flex: 1;
+  padding: 0.5rem 1rem;
+  font-size: 1.1rem;
+  border-radius: 15px;
+  border: 2px solid #00aaaa;
+  outline: none;
+}
+
+/* Get weather button */
+#get-weather-btn {
+  padding: 0.5rem 1.5rem;
+  margin-left: 1rem;
+  background-color: #00aaaa;
+  color: white;
+  border: none;
+  font-family: Verdana, Geneva, sans-serif;
+  font-size: 1.1rem;
+  font-weight: bold;
+  border-radius: 15px;
+  transition: all 0.3s ease;
+}
+
+#get-weather-btn:hover {
+  background-color: #009494;
+  cursor: pointer;
+  transform: translateY(-2px);
+}
+
+/* Responsive tweaks */
+@media (max-width: 500px) {
+  #options-container {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  #get-weather-btn {
+    margin-left: 0;
+    width: 100%;
+  }
+
+  #citie
+
+
+** end of styles.css **
+
+** start of script.js **
+
+const getWeatherBtn = document.getElementById("get-weather-btn");
+const cities = document.getElementById("cities");
+
+async function getWeather(city) {
+  try {
+    const response = await fetch(`https://weather-proxy.freecodecamp.rocks/api/city/${city}`);
+    if (!response.ok) throw new Error("Network response was not ok");
+    const weather = await response.json();
+    return weather;
+  } catch (error) {
+    console.error(error); // ✅ log error to console
+    return undefined;     // ✅ do not throw, just return undefined
+  }
+}
+
+function safeValue(value) {
+  return (value === undefined || value === null) ? "N/A" : value;
+}
+
+async function showWeather(city) {
+  const data = await getWeather(city);
+
+  if (!data) {
+    alert("Something went wrong, please try again later");
+    return;
+  }
+
+  document.getElementById("location").innerText = safeValue(data.name);
+  document.getElementById("weather-icon").src = data.weather?.[0]?.icon || "";
+  document.getElementById("weather-main").innerText = safeValue(data.weather?.[0]?.main);
+  document.getElementById("main-temperature").innerText = safeValue(data.main?.temp);
+  document.getElementById("feels-like").innerText = safeValue(data.main?.feels_like);
+  document.getElementById("humidity").innerText = safeValue(data.main?.humidity);
+  document.getElementById("wind").innerText = safeValue(data.wind?.speed);
+  document.getElementById("wind-gust").innerText = safeValue(data.wind?.gust);
+}
+
+getWeatherBtn.addEventListener("click", () => {
+  const city = cities.value;
+  if (city) {
+    showWeather(city);
+  }
+});
+
+
+** end of script.js **
+
